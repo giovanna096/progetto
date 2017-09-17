@@ -14,58 +14,73 @@
 </html> 
 
 <?php
+    
+    
+    session_start();
+      if(isset($_SESSION['username']) && isset($_SESSION['password'])){
+	    
+      } else{
+	    header('Location:Login.html');
+      }
 
+    if($_SESSION['username']==='admin' && $_SESSION['password']==='admin' ){
+    
     //dati del form
     $id=$_POST['identificatore'];
+
     
-    if($id===null || $id>==0){
-    trigger_error('Errore nell\'inserimento del dato. ', E_USER_NOTICE);
+    //database
+    define('DB_HOST', '127.0.0.1');
+    define('DB_USERNAME', 'root');
+    define('DB_PASSWORD', '');
+    define('DB_NAME', 'progetto');
+    
+    //get connection
+    $mysqli = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
+
+    if($mysqli->connect_errno){
+    	trigger_error('Connection failed: ' . $mysqli->connect_error, E_USER_NOTICE);
     }
 
     
-    //accesso al database
-    $host='localhost';
-    $username='root';
-    $password='';
-    $db_nome='progetto';
-    $result = mysql_pconnect($host, $username, $password);
-    if($result===false){
-        trigger_error('Impossibile connettersi al server: ' . mysql_error(), E_USER_NOTICE);
-    }
-    
-    $result = mysql_select_db($db_nome);
-    if($result===false){
-        trigger_error('Accesso al database non riuscito: ' . mysql_error(), E_USER_NOTICE);
-    }
-    
     //comando SQL
-    $sql = "SELECT * FROM adattatore WHERE Id=$id";
-    $result = mysql_query($sql);
-    $conta= mysql_num_rows($result);
+    $sql = sprintf("SELECT id, stato, id_sensore FROM adattatore WHERE Id='%s'", mysqli_real_escape_string($mysqli, $id));
+    $result = $mysqli->query($sql);
+    $conta= mysqli_num_rows($result);
+    
+    $row = mysqli_fetch_array($result, MYSQLI_NUM);
 
     if($conta===1){
         
+	
+	
 	$str = 'I dati dell\'adattatore cercato sono i seguenti: <br><br>';
         echo $str;
-        
-        $id = mysql_result($result, 0, 'id');
+	
+	$id = htmlspecialchars($row[0]);
 	$str = 'Identificatore:  ' . $id . ' </br>';
         echo $str;
-        $stato = mysql_result($result, 0, 'stato');
+        $stato = htmlspecialchars$row[1];
         if($stato===true){
-	    $str = 'Stato: Attivo <a href="modificaStatoAdatt.html">Edit</a></br>';
+	    $str = 'Stato: Attivo <a href="modificaStatoAdatt1.php">Edit</a></br>';
             echo $str;
         } else{
-	    $str = 'Stato: Non attivo <a href="modificaStatoAdatt.html">Edit</a></br>';
+	    $str = 'Stato: Non attivo <a href="modificaStatoAdatt1.php">Edit</a></br>';
             echo $str;
         }
-        $idsensore = mysql_result($result, 0, 'id_sensore');
-	$str = 'Identificatore sensore: ' . $idsensore . ' <a href="modificaSensoreAdatt.html">Edit</a></br>';
+        $idsensore = htmlspecialchars($row[2]);
+	$str = 'Identificatore sensore: ' . $idsensore . ' <a href="modificaSensoreAdatt1.php">Edit</a></br>';
         echo $str;
     
     } else {
 	$str = 'L\'adattatore non e\' stato trovato.';
         echo $str;
     }
+    
+    
+    }else{
+	trigger_error('Non è autorizzato a modificare questi dati. ' . $mysqli->connect_error, E_USER_NOTICE);
+    }
+
 
 ?>

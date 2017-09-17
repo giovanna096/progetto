@@ -1,6 +1,6 @@
 $(document).ready(function(){
 	$.ajax({
-		url: "http://sensorsystem.altervista.org/chartjs/data.php",
+		url: "http://localhost/miosito/chartjs/data.php",
 		method: "GET",
 		success: function(data) {
 			console.log(data);
@@ -8,7 +8,7 @@ $(document).ready(function(){
 			var valore  = [];
 
 			valore[0]=0;
-            tipo[0]=null;
+			tipo[0]=null;
 
 			for(var i in data) {
 				tipo.push("Tipo " + data[i].tipo);

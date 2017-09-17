@@ -15,18 +15,25 @@
 
 <?php
 
+      session_start();
+      if(isset($_SESSION['username']) && isset($_SESSION['password'])){
+	    
+      } else{
+	    header('Location:Login.html');
+      }     
+
 //dati del form
-$nome=$_POST['nome'];
-$partiva=$_POST['partiva'];
-$domicilio=$_POST['domicilio'];
-$citta=$_POST['citta'];
-$email=$_POST['email'];
-$telefono=$_POST['telefono'];
-$usernameC=$_POST['username'];
-$passwordC=$_POST['password'];
+$nome=htmlentities($_POST['nome']);
+$partiva=htmlentities($_POST['partiva']);
+$domicilio=htmlentities($_POST['domicilio']);
+$citta=htmlentities($_POST['citta']);
+$email=htmlentities($_POST['email']);
+$telefono=htmlentities($_POST['telefono']);
+$usernameC=htmlentities($_POST['username']);
+$passwordC=htmlentities$($_POST['password']);
 
 
-if($nome===null || $partiva>==0 || $partiva===null){
+if($nome===null || $partiva<=0 || $partiva===null){
     trigger_error('Errore nell\'inserimento del dato. ', E_USER_NOTICE);
 }
 
@@ -34,7 +41,7 @@ if($domicilio===null || $citta===null){
     trigger_error('Errore nell\'inserimento del dato. ', E_USER_NOTICE);
 }
 
-if($email===null || $telefono>==0 || $telefono===null){
+if($email===null || $telefono<=0 || $telefono===null){
     trigger_error('Errore nell\'inserimento del dato. ', E_USER_NOTICE);
 }
 

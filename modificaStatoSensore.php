@@ -15,16 +15,24 @@
 
 
 <?php
-
+    
+    
+    session_start();
+      if(isset($_SESSION['username']) && isset($_SESSION['password'])){
+	    
+      } else{
+	    header('Location:Login.html');
+      }
+    
     //dati del form
     $idsensore=$_POST['id'];
     $idimpianto=$_POST['idimpianto'];
     
-    if($idsensore===null || $idsensore>==0){
+    if($idsensore===null || $idsensore<=0){
         trigger_error('Errore nell\'inserimento del dato. ' , E_USER_NOTICE);
     }
     
-    if($idimpianto===null || $idimpianto>==0){
+    if($idimpianto===null || $idimpianto<=0){
         trigger_error('Errore nell\'inserimento del dato. ' , E_USER_NOTICE);
     }
     

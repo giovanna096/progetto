@@ -15,34 +15,43 @@
 
 
 <?php
-
+    
+    session_start();
+      if(isset($_SESSION['username']) && isset($_SESSION['password'])){
+	    
+      } else{
+	    header('Location:Login.html');
+      }
+    
+    $user = $_SESSION['username'];
+    $pass = $_SESSION['password'];
     //dati del form
     $domicilio=$_POST['domicilio'];
-    $partiva=$_POST['partitaiva'];
+   
+   
+    //database
+    define('DB_HOST', '127.0.0.1');
+    define('DB_USERNAME', 'root');
+    define('DB_PASSWORD', '');
+    define('DB_NAME', 'progetto');
     
-    if($partiva===null || $partiva>==0 || $domicilio===null){
-        trigger_error('Errore nell\'inserimento del dato. ', E_USER_NOTICE);
+    //get connection
+    $mysqli = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
+
+    if($mysqli->connect_errno){
+    	trigger_error('Connection failed: ' . $mysqli->connect_error, E_USER_NOTICE);
     }
+
+    $sql = sprintf("SELECT partitaiva FROM cliente WHERE username='%s' AND password='%s'", mysqli_real_escape_string($mysqli, $user), mysqli_real_escape_string($mysqli, $pass));
+    $result = $mysqli->query($sql);
     
-    //accesso al database
-    $host='localhost';
-    $username='root';
-    $password='';
-    $db_nome='progetto';
-    $result = mysql_pconnect($host, $username, $password);
-    if($result===false){
-        trigger_error('Impossibile connettersi al server: ' . mysql_error(), E_USER_NOTICE);
-    }
-    
-    $result = mysql_select_db($db_nome);
-    if($result===false){
-        trigger_error('Accesso al database non riuscito: ' . mysql_error(), E_USER_NOTICE);
-    }
-    
+    $row = mysqli_fetch_array($result);
     //comando SQL
-    $sql = "UPDATE cliente SET domicilio='$domicilio' WHERE partitaiva='$partiva'";
+    $sql = sprintf("UPDATE cliente SET domicilio='%s' WHERE partitaiva='%s'", mysqli_real_escape_string($mysqli, $domicilio), mysqli_real_escape_string($mysqli, $row[0]));
+    $result = $mysqli->query($sql);
     
-    if(mysql_query($sql)===true){
+    
+    if($result===true){
         $str = 'Dati modificati correttamente<br />';
         echo $str;
         $str = "Torna alle <a href=\"opzioniazienda.php\">opzioni di selezione</a><br>";

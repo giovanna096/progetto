@@ -14,18 +14,26 @@
 </html>
 
 <?php
-
-    //dati del form
-    $id=$_POST['identificatore'];
-    $dimensione=$_POST['dimensione'];
-    $tipo=$_POST['tipo'];
-    $idCliente=$_POST['idcliente'];
     
-    if($id===null || $id>==0){
+    session_start();
+      if(isset($_SESSION['username']) && isset($_SESSION['password'])){
+	    
+      } else{
+	    header('Location:Login.html');
+      }
+    
+    
+    //dati del form
+    $id=htmlentities($_POST['identificatore']);
+    $dimensione=htmlentities($_POST['dimensione']);
+    $tipo=htmlentities($_POST['tipo']);
+    $idCliente=htmlentities($_POST['idcliente']);
+    
+    if($id===null || $id<=0){
 	trigger_error('Errore nell\'inserimento del dato. ', E_USER_NOTICE);
     }
     
-    if($dimensione===null || $dimensione>==0){
+    if($dimensione===null || $dimensione<=0){
 	trigger_error('Errore nell\'inserimento del dato. ', E_USER_NOTICE);
     }
     
@@ -33,7 +41,7 @@
 	trigger_error('Errore nell\'inserimento del dato. ', E_USER_NOTICE);
     }
     
-    if($idCliente===null || $idCliente>==0){
+    if($idCliente===null || $idCliente<=0){
 	trigger_error('Errore nell\'inserimento del dato. ', E_USER_NOTICE);
     }
     

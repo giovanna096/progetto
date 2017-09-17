@@ -15,34 +15,32 @@
 
 <?php
     
-
+    session_start();
+      if(isset($_SESSION['username']) && isset($_SESSION['password'])){
+	    
+      } else{
+	    header('Location:Login.html');
+      }
     
     //dati del form
     $id=$_POST['identificatore'];
     $idsensore=$_POST['idsensore'];
     
-    if($id===null || $id>==0){
-    trigger_error('Errore nell\'inserimento del dato. ', E_USER_NOTICE);
-    }
-
-    if($idsensore===null || $idsensore>==0){
-        trigger_error('Errore nell\'inserimento del dato. ', E_USER_NOTICE);
-    }
     
-    
-    //accesso al database
-    $host='localhost';
-    $username='root';
-    $password='';
-    $db_nome='progetto';
-    $result = mysql_pconnect($host, $username, $password);
-    if($result===false){
-        trigger_error('Impossibile connettersi al server: ' . mysql_error(), E_USER_NOTICE);
-    }
-    
-    $result = mysql_select_db($db_nome);
-    if($result===false){
-        trigger_error('Accesso al database non riuscito: ' . mysql_error(), E_USER_NOTICE);
+    //acquisizione dati dal form HTML
+    $codice = $_POST['codice'];
+    $modinvio = $_POST['modinvio'];
+    $tipo = $_POST['tipo'];
+    $tempo = $_POST['tempo'];
+    $info = $_POST['info'];
+    $partitaiva = $_POST['partiva'];
+	
+    $idimpianto = $_POST['idimpianto'];
+    $idsensore = $_POST['idsensore'];
+	
+    //controlli per l'input
+    if($partitaiva===null || $partitaiva<=0){
+    	trigger_error('Errore nell\'inserimento del dato. ', E_USER_NOTICE);
     }
     
     if(isset($_POST['stato'])) { 
@@ -51,9 +49,10 @@
     }
     
     //comando SQL
-    $sql = "INSERT INTO adattatore (Id, stato, id_sensore) VALUES ('$id','$stato','$idsensore')";
+    $sql = sprintf("INSERT INTO adattatore (Id, stato, id_sensore) VALUES ('%s','%s','%s')", mysqli_real_escape_string($mysqli, $id), mysqli_real_escape_string($mysqli, $stato), mysqli_real_escape_string($mysqli, $idsensore));
+    $result = $mysqli->query($sql);    
     
-    if(mysql_query($sql)===true){
+    if($result===true){
         echo 'Dati memorizzati correttamente<br />';
         $str = "Torna alle <a href=\"opzioniazienda.php\">opzioni di selezione</a>";
         echo $str;

@@ -4,15 +4,15 @@ header('Content-Type: application/json');
 
 //database
 define('DB_HOST', '127.0.0.1');
-define('DB_USERNAME', 'sensorsystem');
+define('DB_USERNAME', 'root');
 define('DB_PASSWORD', '');
-define('DB_NAME', 'my_sensorsystem');
+define('DB_NAME', 'progetto');
 
 //get connection
 $mysqli = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
 if(!$mysqli){
-	die("Connection failed: " . $mysqli->error);
+	trigger_error('Connection failed: ' . $mysqli->error, E_USER_NOTICE);
 }
 
 //query to get data from the table
@@ -29,8 +29,6 @@ foreach ($result as $row) {
 }
 }
 
-//free memory associated with result
-$result->close();
 
 //close connection
 $mysqli->close();

@@ -15,34 +15,42 @@
 
 
 <?php
+    
+    
+    session_start();
+      if(isset($_SESSION['username']) && isset($_SESSION['password'])){
+	    
+      } else{
+	    header('Location:Login.html');
+      }
+    
+    if($_SESSION['username']==='admin' && $_SESSION['password']==='admin' ){
 
     //dati del form
     $email=$_POST['email'];
     $partiva=$_POST['partitaiva'];
     
-    if($email===null || $partiva>==0 || $partiva===null){
-        trigger_error('Errore nell\'inserimento del dato. ', E_USER_NOTICE);
+    
+    //database
+    define('DB_HOST', '127.0.0.1');
+    define('DB_USERNAME', 'root');
+    define('DB_PASSWORD', '');
+    define('DB_NAME', 'progetto');
+    
+    //get connection
+    $mysqli = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
+
+    if($mysqli->connect_errno){
+    	trigger_error('Connection failed: ' . $mysqli->connect_error, E_USER_NOTICE);
     }
     
-    //accesso al database
-    $host='localhost';
-    $username='root';
-    $password='';
-    $db_nome='progetto';
-    $result = mysql_pconnect($host, $username, $password);
-    if($result===false){
-        trigger_error('Impossibile connettersi al server: ' . mysql_error(), E_USER_NOTICE);
-    }
-    
-    $result = mysql_select_db($db_nome);
-    if($result===false){
-        trigger_error('Accesso al database non riuscito: ' . mysql_error(), E_USER_NOTICE);
-    }
     
     //comando SQL
-    $sql = "UPDATE cliente SET email='$email' WHERE partitaiva='$partiva'";
+    $sql = sprintf("UPDATE cliente SET email='$email' WHERE partitaiva='$partiva'", mysqli_real_escape_string($mysqli, $email), mysqli_real_escape_string($mysqli, $partiva));
+    $result = $mysqli->query($sql);
     
-    if(mysql_query($sql)===true){
+    
+    if($result===true){
         echo 'Dati modificati correttamente<br />';
         $str = "Torna alle <a href=\"opzioniazienda.php\">opzioni di selezione</a><br>";
         echo $str;
@@ -51,5 +59,7 @@
     } else {
         echo 'Attenzione, si è verificato un errore: ' . mysql_error();
     }
-
+    }else{
+	trigger_error('Non è autorizzato a modificare questi dati. ' . $mysqli->connect_error, E_USER_NOTICE);
+    }
 ?>

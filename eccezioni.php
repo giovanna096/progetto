@@ -15,29 +15,41 @@
 
 <?php
 
-//accesso al database
-    $host="localhost";
-    $username="sensorsystem";
-    $password="";
-    $db_nome="my_sensorsystem";
-    mysql_connect($host, $username, $password) or die ('Impossibile connettersi al server: ' . mysql_error());
-	    mysql_select_db($db_nome) or die ('Accesso al database non riuscito: ' . mysql_error());
+    //database
+    define('DB_HOST', '127.0.0.1');
+    define('DB_USERNAME', 'root');
+    define('DB_PASSWORD', '');
+    define('DB_NAME', 'progetto');
+    
+    //get connection
+    $mysqli = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
+
+    if($mysqli->connect_errno){
+    	trigger_error('Connection failed: ' . $mysqli->connect_error, E_USER_NOTICE);
+    }
 
     //dati del form
 
-$partitaiva=$_POST["partitaiva"];
-
-    //comando SQL
-    $sql = "SELECT id_impianto, Id_sensore, valore FROM datirilevati JOIN impianto ON Id=id_impianto WHERE id_cliente='$partitaiva' ";
-    $result = mysql_query($sql);
-    if(!$result) die ('Query fallita!! .');
+    $partitaiva=htmlentities($_POST["partitaiva"]);
     
-    $sql1 = "SELECT id_impianto, ValMax, ValMin, Tipo FROM modellostringa";
-    $result1 = mysql_query($sql1);
-    if(!$result1) die ('Query fallita!! .');
+    //controllo input
+    if($partitaiva==null || $partitaiva<=0){
+	trigger_error('Errore nell\'inserimento del dato. ', E_USER_NOTICE);
+    }
+    
+    //comando SQL
+    $sql = sprintf("SELECT id_impianto, Id_sensore, valore FROM datirilevati JOIN impianto ON Id=id_impianto WHERE id_cliente='%s' ", mysqli_real_escape_string($mysqli, $partitaiva));
+    $result = $mysqli->query($sql);
+    if($result===false) trigger_error('Query fallita. ', E_USER_NOTICE);
+    $row = mysqli_fetch_array($result, MYSQLI_NUM);
+    
+    $sql1 = sprintf("SELECT id_impianto, ValMax, ValMin, Tipo FROM modellostringa");
+    $result1 = $mysqli->query($sql1);    
+    if($result1===false) trigger_error('Query fallita. ', E_USER_NOTICE);
+    $row1 = mysqli_fetch_array($result1, MYSQLI_NUM);
   
-    $conta= mysql_num_rows($result);
-    $conta2= mysql_num_rows($result1);
+    $conta= mysqli_num_rows($result);
+    $conta2= mysqli_num_rows($result1);
 
     $i=0;
     $j=0;
@@ -46,27 +58,32 @@ $partitaiva=$_POST["partitaiva"];
 	    while($i<$conta){
 
 
-	                            $id_impianto[$i] = mysql_result($result, 0, "id_impianto");
-                                    $valore[$i] = mysql_result($result, 0, "valore");
-                                    $idsensore[$i]= mysql_result($result, 0, "Id_sensore");
-                                    $id [$j]= mysql_result($result1, 0, "id_impianto");
-                                    $max [$j]= mysql_result($result1, 0, "ValMax");
-                                    $min [$j]= mysql_result($result1, 0, "ValMin");
-                                    $tipo[$j]= mysql_result($result1, 0, "Tipo");
+	                            $id_impianto[$i] = htmlspecialchars($row[0]);
+                                    $valore[$i] = htmlspecialchars($row[1]);
+                                    $idsensore[$i]= htmlspecialchars($row[2]);
+                                    $id [$j]= htmlspecialchars($row1[0]);
+                                    $max [$j]= htmlspecialchars($row1[1]);
+                                    $min [$j]= htmlspecialchars($row1[2]);
+                                    $tipo[$j]= htmlspecialchars($row1[3]);
 
                                     if($id_impianto=$id){
                                              if($valore<$min || $valore>$max){
-
-                                                   echo '<br> Sono state rilevate eccezioni nei seguenti: <br><br>';
-                                                   echo 'Identificatore impianto:  ' . $idimpianto[$i] . ' </br>';
-                                                   echo 'Identificatore sensore:  ' . $idsensore [$i]. ' </br>';
-                                                   echo 'Tipo sensore:  ' . $tipo[$j] . ' </br>';
-                                                   echo 'valore :  ' . $valore[$j] . ' </br>';
+						   $str = '<br> Sono state rilevate eccezioni nei seguenti: <br><br>';
+                                                   echo $str;
+						   $str = 'Identificatore impianto:  ' . $idimpianto[$i] . ' </br>';
+                                                   echo $str;
+						   $str = 'Identificatore sensore:  ' . $idsensore [$i]. ' </br>';
+                                                   echo $str;
+						   $str = 'Tipo sensore:  ' . $tipo[$j] . ' </br>';
+                                                   echo $str;
+						   $str = 'valore :  ' . $valore[$j] . ' </br>';
+                                                   echo $str;
                                                             	$i++;
 			                                        $j++;
 
                                                    } else{
-                                                     echo '<br> Non sono state rilevate eccezioni. <br><br>';
+						     $str = '<br> Non sono state rilevate eccezioni. <br><br>';
+                                                     echo $str;
                                                      	$i++;
 			                                $j++; }
                                       }else{ }
@@ -76,7 +93,8 @@ $partitaiva=$_POST["partitaiva"];
 	    }
 
     } else {
-        echo " Nessun dato trovato. <br>";
+	$str = ' Nessun dato trovato. <br>';
+        echo $str;
     }
 
 

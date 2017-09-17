@@ -16,15 +16,24 @@
 
 <?php
 
+    
+    session_start();
+      if(isset($_SESSION['username']) && isset($_SESSION['password'])){
+	    
+      } else{
+	    header('Location:Login.html');
+      }
+    
+
     //dati del form
-    $id=$_POST['identificatore'];
-    $marca=$_POST['marca'];
-    $tipo=$_POST['tipo'];
-    $idimpianto=$_POST['idimpianto'];
-    $modello=$_POST['modello'];
-    $coderr=$_POST['codice'];
-    $valmin =$_POST['valmin'];
-    $valmax=$_POST['valmax'];
+    $id=htmlentities($_POST['identificatore']);
+    $marca=htmlentities($_POST['marca']);
+    $tipo=htmlentities($_POST['tipo']);
+    $idimpianto=htmlentities($_POST['idimpianto']);
+    $modello=htmlentities($_POST['modello']);
+    $coderr=htmlentities($_POST['codice']);
+    $valmin =htmlentities($_POST['valmin']);
+    $valmax=htmlentities($_POST['valmax']);
     $segn=0;
     
     
@@ -55,7 +64,7 @@
         $sql1=sprintf("SELECT * FROM modellostringa WHERE tipo='%s' AND id_impianto='%s'", mysql_real_escape_string($tipo), mysql_real_escape_string($idimpianto));
         $result = mysql_query($sql1, $dbh);
         $conta = mysql_num_rows($result);
-        if($conta>==1){
+        if($conta>=1){
             $segn=1;
         }        
     }

@@ -49,36 +49,36 @@
     if($conta===1){
     
         $str = 'I dati del cliente cercato sono i seguenti: <br><br>';
-        echo $str;
-            
+       // echo $str;
+        echo $dati = htmlspecialchars( mysql_result($str, 0, 'str') );
         $partitaiva = $row[0];
-        $str = '<b>Partita Iva:  </b>' . $partitaiva . ' </br>';
-        echo $str;
+        $dati = '<b>Partita Iva:  </b>' . $partitaiva . ' </br>';
+        echo $dati;
         $nome = $row[1];
-        $str = '<b>Nome: </b> ' . $nome . ' </br>';
-        echo $str;
+        $dati = '<b>Nome: </b> ' . $nome . ' </br>';
+        echo $dati;
         $domicilio = $row[2];
-        $str = '<b>Domicilio:  </b>' . $domicilio . ' </br>';
+        $dati = '<b>Domicilio:  </b>' . $domicilio . ' </br>';
         echo $str;
         $citta = $row[3];
-        $str = '<b>Citta: </b>' . $citta . ' </br>';
-        echo $str;
+        $dati = '<b>Citta: </b>' . $citta . ' </br>';
+        echo $dati;
         $tel = $row[4];
-        $str = '<b>Telefono: </b>' . $tel . ' </br>';
+        $dati = '<b>Telefono: </b>' . $tel . ' </br>';
         echo $str;
         $email = $row[5];
-        $str = '<b>Email: </b>' . $email . ' </br>';
-        echo $str;
+        $dati = '<b>Email: </b>' . $email . ' </br>';
+        echo $dati;
         $username = $row[6];
-        $str =  '<b>Username: </b>' . $username . ' </br>';
-        echo $str;
+        $dati =  '<b>Username: </b>' . $username . ' </br>';
+        echo $dati;
         $password = $row[7];
-        $str = '<b>Password: </b>' . $password . ' </br>';
-        echo $str;
+        $dati = '<b>Password: </b>' . $password . ' </br>';
+        echo $dati;
     
     } else {
-        $str = 'l cliente non e\' stato trovato. <br> Torna alle <a href=\"opzioniazienda.php\">opzioni di selezione</a>';
-        echo $str;
+        $dati = 'l cliente non e\' stato trovato. <br> Torna alle <a href=\"opzioniazienda.php\">opzioni di selezione</a>';
+        echo $dati;
     }
 
 ?>
